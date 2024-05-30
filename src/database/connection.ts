@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import config from "../config/config";
 
-const pool = new Pool({
+export const pool = new Pool({
     user: config.DB_USER,
     host: config.DB_HOST,
     database: config.DB_NAME,
@@ -10,4 +10,3 @@ const pool = new Pool({
     max: 20
 });
 
-export default pool;

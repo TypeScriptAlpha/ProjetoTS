@@ -26,18 +26,24 @@ export class LoginUserUseCase {
             throw new HttpError(404, 'User not founded');
         }
 
+        if(!userData.id){
+            throw new HttpError(404, 'User not founded');
+        }
+
         const comparePassword = await Utils.comparePassword(data.password, userData.password)
 
         if(!comparePassword){
             throw new HttpError(403, 'Invalid credentials');
         }
 
-
+        const leader = await this.userRespository.getLeaderByUserId(userData.id)
 
         const user = {
             id: userData.id,
-            is_admin: userData.is_admin
+            is_admin: userData.is_admin,
+            leader: leader?.leader            
         }
+        
 
         const sessionToken = jwt.sign(
             user,

@@ -12,6 +12,9 @@ export class GetOwnUserController {
         }
         
         const userId = req.user.id;
+        if(!userId){
+            throw new HttpError(401, 'User not authenticated');
+        }
         try {
             const user = await this.getOwnUserUseCase.execute(userId);
             return res.status(200).json(user);

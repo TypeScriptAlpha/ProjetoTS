@@ -1,8 +1,7 @@
-import { User } from "../../entities/User";
+import { Team, User } from "../../entities/User";
 import { UserRepository } from "../UserRepository";
 import { pool } from "../../database/connection";
 import { HttpError } from "../../errors/HttpError";
-import { readSync } from "fs";
 
 export class PostgresUserRepository implements UserRepository {
     constructor (){}
@@ -36,7 +35,7 @@ export class PostgresUserRepository implements UserRepository {
 
     public async getAllUsers(): Promise<User[]> {
         let client:any = null;
-        const query: string = 'SELECT id, username, email, first_name, last_name FROM users';
+        const query: string = 'SELECT id, username, email, first_name, last_name, squad FROM users';
         
         try {
             client = await pool.connect();
@@ -88,7 +87,7 @@ export class PostgresUserRepository implements UserRepository {
             } else {
                 return null;
             }
-        } catch (error){
+        } catch (error: any){
             console.log('Erro requesting data: ', error);
             throw new HttpError(401, 'Error requesting data');
         } finally {
@@ -96,4 +95,151 @@ export class PostgresUserRepository implements UserRepository {
                 client.release();
             }
         }
-    }}
+    }
+
+    public async deleteUserById(id: string): Promise<void> {
+        let client: any = null;
+        const query: string = 'DELETE FROM users WHERE id = $1';
+
+        try{
+            client = await pool.connect();
+            await client.query('BEGIN');
+            const result = await client.query(query, [id]);
+            await client.query('COMMIT');
+            console.log('User deleted successfully');
+
+            return;
+        } catch (error: any){
+            console.error('Error deleting user', error);
+            await client.query('ROLLBACK');
+            throw new HttpError(500, 'Error deleting user');
+        } finally {
+            if(client){
+                client.release()
+            }
+        }
+    }
+
+    public async getUserById(id: string): Promise<User | null>{
+        let client: any = null;
+        const query: string = 'SELECT * FROM users WHERE id = $1';
+
+        try{
+            client = await pool.connect();
+            const result = await client.query(query, [id]);
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } 
+
+            return null;      
+        } catch(error: any){
+            console.log('Erro requesting data: ', error);
+            throw new HttpError(401, 'Error requesting data');
+        } finally {
+            if(client){
+                client.release();
+            }
+        }
+    }
+
+    public async deleteUserFromTeam(user_id: string): Promise<User | null> {
+        let client: any = null;
+
+        const query: string = "UPDATE users SET squad = NULL WHERE id = $1 RETURNING id, username, email, first_name, last_name, squad";
+
+        try {
+            client = await pool.connect();
+            await pool.query('BEGIN');
+            const result = await client.query(query, [user_id]);
+            await pool.query('COMMIT');
+            console.log('User has been removed from squad');
+
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } 
+
+            return null;
+
+        } catch(error){
+            console.log('Error removing user from squad: ', error);
+            throw new HttpError(417, 'Error removing user from squad');
+        } finally{
+            if(client){
+                client.release();
+            }
+        }
+    }
+
+    public async getTeamById(team_id: string): Promise<Team | null> {
+        let client: any = null;
+
+        const query: string = 'SELECT * FROM squads WHERE id = $1';
+
+        try{
+            client = await pool.connect();
+            const result = await client.query(query, [team_id]);
+
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } 
+
+            return null;
+
+        } catch(error: any){
+            console.log('Error requesting data: ', error);
+            throw new HttpError(401, 'Error requesting data');
+        } finally {
+            if(client){
+                client.release();
+            }
+        }
+    }
+
+    public async deleteTeamByTeamId(team_id: string): Promise<void> {
+        let client: any = null;
+
+        const query: string = 'DELETE FROM squads WHERE id = $1'
+
+        try{
+            client = await pool.connect();
+            await client.query('BEGIN');
+            const result = await client.query(query, [team_id]);
+            await client.query('COMMIT');
+            console.log('Team deleted successfully');
+            
+            return;
+        } catch(error: any){
+            console.error('Erro deleting team: ', error);
+            await client.query('ROLLBACK');
+            throw new HttpError(500, 'Error deleting user');
+        } finally {
+            if(client){
+                client.release();
+            }
+        }
+    }
+    
+    public async getLeaderByUserId(id: string): Promise<Team | null> {
+        let client: any = null;
+
+        const query: string = 'SELECT * FROM squads WHERE leader = $1';
+
+        try{
+            client = await pool.connect();
+            const result = await client.query(query, [id]);
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } 
+            return null;
+        } catch(error){
+            console.log('Erro requesting data: ', error);
+            throw new HttpError(401, 'Error requesting data');
+        } finally {
+            if(client){
+                client.release();
+            }
+        }
+
+    }
+
+}

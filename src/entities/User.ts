@@ -1,6 +1,6 @@
 export class User {
     
-    public id?: string
+    public id?: string;
     public username?: string;
     public first_name?: string;
     public last_name?: string;
@@ -19,4 +19,17 @@ export class User {
         this.is_admin = props.is_admin;
         this.squad = props.squad;
     }
+}
+
+export class Team {
+    public id?: string;
+    public name?: string;
+    public leader?: string;
+
+    constructor(props: Partial<Team>){
+        this.id = props.id;
+        this.name = props.name;
+        this.leader = props.leader;
+    }
+
 }

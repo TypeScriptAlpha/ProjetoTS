@@ -13,5 +13,4 @@ export interface UserRepository{
     deleteUserById(id: string): Promise<void>
     deleteUserFromTeam(user_id: string): Promise<User | null>
     deleteTeamByTeamId(team_id: string): Promise<void>
-
 }

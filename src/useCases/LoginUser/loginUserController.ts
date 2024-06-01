@@ -29,3 +29,9 @@ export class LoginUserController {
             return res.status(500).json({ error: 'Internal Server Error' });
         }
 }}
+// curl -X POST http://localhost:3000/login \
+// -H "Content-Type: application/json" \
+// -d '{
+//     "email": "email@exemplo.com",
+//     "password": "Senha123"
+// }'

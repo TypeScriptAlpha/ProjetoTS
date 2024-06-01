@@ -239,7 +239,5 @@ export class PostgresUserRepository implements UserRepository {
                 client.release();
             }
         }
-
     }
-
 }

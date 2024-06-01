@@ -36,3 +36,12 @@ export class CreateUserController {
         }
     }
 }
+//curl -X POST http://localhost:3000/users \
+// -H "Content-Type: application/json" \
+// -d '{
+//     "username": "novousuario",
+//     "first_name": "Primeiro",
+//     "last_name": "Ultimo",
+//     "email": "email@exemplo.com",
+//     "password": "Senha123"
+// }'

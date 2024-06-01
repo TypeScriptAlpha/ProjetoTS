@@ -96,4 +96,28 @@ export class PostgresUserRepository implements UserRepository {
                 client.release();
             }
         }
-    }}
+    }
+
+    public async getUserById(id: string): Promise<User | null> {
+        let client: any = null;
+        const query: string = 'SELECT * FROM users WHERE id = $1'
+
+        try{
+            client = await pool.connect();
+            const result = await client.query(query, [id]);
+
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } else {
+                return null;
+            }
+        } catch (error){
+            console.log('Erro requesting data: ', error);
+            throw new HttpError(401, 'Error requesting data');
+        } finally {
+            if(client){
+                client.release();
+            }
+        }
+    }
+}

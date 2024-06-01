@@ -45,6 +45,8 @@ declare module 'express-serve-static-core' {
     id: string; // Assuma que o payload do seu token inclui o ID do usuário
     // você pode adicionar mais propriedades aqui conforme o payload do seu token
     is_admin: boolean;
+
+    leader: string;
   }
 
   interface Request {

@@ -41,7 +41,7 @@ export class LoginUserUseCase {
         const user = {
             id: userData.id,
             is_admin: userData.is_admin,
-            leader: leader?.leader            
+            leader: leader?.id            
         }
         
 

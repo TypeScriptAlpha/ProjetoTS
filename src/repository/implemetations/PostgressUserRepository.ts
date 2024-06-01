@@ -231,11 +231,62 @@ export class PostgresUserRepository implements UserRepository {
                 return result.rows[0]
             } 
             return null;
-        } catch(error){
+        } catch(error:any){
             console.log('Erro requesting data: ', error);
             throw new HttpError(401, 'Error requesting data');
         } finally {
             if(client){
+                client.release();
+            }
+        }
+    }
+
+    public async updateUserById(user: User): Promise<User | null> {
+        let client: any = null;
+
+        const query: string = 'UPDATE users SET username = $1, email = $2, first_name = $3, last_name = $4, password = $5 WHERE id = $6 RETURNING id, username, email, first_name, last_name';
+
+        try{
+            client = await pool.connect();
+            await client.query('BEGIN');
+            const result = await client.query(query, [user.username, user.email, user.first_name, user.last_name, user.password, user.id]);
+            await client.query('COMMIT');
+
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } 
+            return null;
+        } catch(error: any){
+            console.log('Error updating data: ', error);
+            throw new HttpError(417, "Error updating data");
+        } finally {
+            if(client){
+                client.release();
+            }
+        }
+    }
+
+    public async updateTeamById(team: Team): Promise<Team | null> {
+        let client: any = null;
+
+        const query: string = 'UPDATE squads SET name = $1, leader = $2 WHERE id = $3 RETURNING id, name, leader';
+
+        try {
+            client = await pool.connect();
+            await client.query('BEGIN'); 
+            
+            const result = await client.query(query, [team.name, team.leader, team.id]);
+            const updatedTeam = result.rows[0]; 
+
+            await client.query('COMMIT'); 
+
+            return updatedTeam || null; 
+        } catch (error: any) {
+            await client.query('ROLLBACK'); 
+            console.error('Error updating data:', error);
+            throw new HttpError(500, 'Error updating data');
+        } finally {
+            if (client) {
                 client.release();
             }
         }

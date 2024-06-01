@@ -8,6 +8,8 @@ import { logoutUserController } from "../useCases/LogoutUser";
 import { deleteUserController } from "../useCases/DeleteUser";
 import { deleteUserFromTeamController } from "../useCases/DeleteUserFromTeam";
 import { deleteTeamController } from "../useCases/DeleteTeam";
+import { updateUserController } from "../useCases/UpdateUser";
+import { updateTeamController } from "../useCases/UpdateTeam";
 
 const router: Router = Router();
 
@@ -25,6 +27,7 @@ router.get('/users', auth, (req, res) => {
 
 router.get('/users/me', auth, (req, res) =>{
     return getOwnUserController.handle(req, res);
+})
 
 router.delete('/logout', (req, res) => {
     return logoutUserController.handle(req, res);
@@ -40,6 +43,14 @@ router.delete('/teams/:team_id', auth, (req, res) => {
 
 router.delete('/teams/:team_id/member/:user_id', auth, (req, res) => {
     return deleteUserFromTeamController.handle(req, res);
+})
+
+router.patch('/users/:user_id', auth, (req, res) => {
+    return updateUserController.handle(req, res);
+})
+
+router.patch('/teams/:team_id', auth, (req, res) => {
+    return updateTeamController.handle(req, res);
 })
 
 export default router;

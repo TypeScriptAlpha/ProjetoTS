@@ -316,4 +316,29 @@ export class PostgresUserRepository implements UserRepository {
             }
         }
     }
+
+    public async getSquadById(id: string ): Promise<Team | null> {
+        let client: any = null;
+
+        const query: string = 'SELECT name, leader FROM squads WHERE id = $1';
+
+        try{
+            client = await pool.connect();
+            const result = await client.query(query, [id]);
+
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } 
+
+            return null;
+
+        } catch(error: any){
+            console.log('Error requesting data: ', error);
+            throw new HttpError(401, 'Error requesting data');
+        } finally {
+            if(client){
+                client.release();
+            }
+        }
+    }
 }

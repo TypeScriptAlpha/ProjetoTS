@@ -16,5 +16,5 @@ export interface UserRepository{
     updateUserById(user: User): Promise<User | null>
     updateTeamById(team: Team): Promise<Team | null>
     getUser(id: string): Promise<User | null>;
-
+    getSquadById(id: string): Promise<Team | null>;
 }

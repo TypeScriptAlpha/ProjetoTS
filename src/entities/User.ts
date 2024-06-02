@@ -19,6 +19,7 @@ export class User {
         this.password = props.password;
         this.is_admin = props.is_admin;
         this.squad = props.squad;
+        this.leader = props.leader;
     }
 }
 

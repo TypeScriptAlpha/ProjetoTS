@@ -45,3 +45,43 @@ export class CreateUserController {
 //     "email": "email@exemplo.com",
 //     "password": "Senha123"
 // }'
+
+//curl -X POST http://localhost:3000/users \
+// -H "Content-Type: application/json" \
+// -d '{
+//     "username": "anita",
+//     "first_name": "Anita",
+//     "last_name": "Kawasaki",
+//     "email": "anita@exemplo.com",
+//     "password": "Senha123"
+// }'
+
+//curl -X POST http://localhost:3000/users \
+// -H "Content-Type: application/json" \
+// -d '{
+//     "username": "pedro",
+//     "first_name": "Pedro",
+//     "last_name": "Fernandes",
+//     "email": "pedro@exemplo.com",
+//     "password": "Senha123"
+// }'
+
+//curl -X POST http://localhost:3000/users \
+// -H "Content-Type: application/json" \
+// -d '{
+//     "username": "kaliane",
+//     "first_name": "Kaliane",
+//     "last_name": "Marques",
+//     "email": "kaliane@exemplo.com",
+//     "password": "Senha123"
+// }'
+
+//curl -X POST http://localhost:3000/users \
+// -H "Content-Type: application/json" \
+// -d '{
+//     "username": "leonardo",
+//     "first_name": "Leonardo",
+//     "last_name": "Mori",
+//     "email": "leonardo@exemplo.com",
+//     "password": "Senha123"
+// }'

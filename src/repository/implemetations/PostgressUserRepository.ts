@@ -291,4 +291,29 @@ export class PostgresUserRepository implements UserRepository {
             }
         }
     }
+
+    public async getUser(id: string): Promise<User | null> {
+        let client: any = null;
+
+        const query: string = 'SELECT id, username, email, first_name, last_name, squad, is_admin FROM users WHERE id = $1';
+    
+        try {
+            client = await pool.connect();
+            await client.query('BEGIN');
+    
+            const result = await client.query(query, [id]);
+            const user = result.rows[0];
+    
+            await client.query('COMMIT');
+            return user || null;
+        } catch (error: any) {
+            await client.query('ROLLBACK');
+            console.error('Error fetching user:', error);
+            throw new HttpError(500, 'Error fetching user');
+        } finally {
+            if (client) {
+                client.release();
+            }
+        }
+    }
 }

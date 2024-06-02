@@ -12,6 +12,7 @@ import { updateUserController } from "../useCases/UpdateUser";
 import { updateTeamController } from "../useCases/UpdateTeam";
 import { getUserController } from "../useCases/getUser";
 import { getTeamController } from "../useCases/GetTeamById";
+import { getTeamMembersController } from "../useCases/GetTeamMembers";
 
 const router: Router = Router();
 
@@ -61,6 +62,10 @@ router.get('/users/:user_id', auth, (req, res) => {
 
 router.get('/teams/:team_id', auth, (req, res) => {
     return getTeamController.handle(req, res);
+})
+
+router.get('/teams/:team_id/members', auth, (req, res) => {
+    return getTeamMembersController.handle(req, res);
 })
 
 export default router;

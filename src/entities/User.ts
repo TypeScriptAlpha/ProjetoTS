@@ -8,6 +8,7 @@ export class User {
     public password?: string;
     public is_admin?: boolean;
     public squad?: string | null;
+    public leader?: string;
 
     constructor(props: Partial<User>){
         this.id = props.id

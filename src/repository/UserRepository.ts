@@ -15,5 +15,6 @@ export interface UserRepository{
     deleteTeamByTeamId(team_id: string): Promise<void>
     updateUserById(user: User): Promise<User | null>
     updateTeamById(team: Team): Promise<Team | null>
+    getUser(id: string): Promise<User | null>;
 
 }

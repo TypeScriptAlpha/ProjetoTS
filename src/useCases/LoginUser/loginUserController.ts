@@ -32,6 +32,6 @@ export class LoginUserController {
 // curl -X POST http://localhost:3000/login \
 // -H "Content-Type: application/json" \
 // -d '{
-//     "email": "leonardo@exemplo.com",
+//     "email": "anita@exemplo.com",
 //     "password": "Senha123"
 // }'

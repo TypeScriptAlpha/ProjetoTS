@@ -46,6 +46,7 @@ declare module 'express-serve-static-core' {
     // você pode adicionar mais propriedades aqui conforme o payload do seu token
     is_admin: boolean;
     leader: string;
+    squad?: string;
   }
 
   interface Request {

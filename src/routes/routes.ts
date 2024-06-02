@@ -11,6 +11,7 @@ import { deleteTeamController } from "../useCases/DeleteTeam";
 import { updateUserController } from "../useCases/UpdateUser";
 import { updateTeamController } from "../useCases/UpdateTeam";
 import { getUserController } from "../useCases/getUser";
+import { getTeamController } from "../useCases/GetTeamById";
 
 const router: Router = Router();
 
@@ -57,5 +58,9 @@ router.patch('/teams/:team_id', auth, (req, res) => {
 router.get('/users/:user_id', auth, (req, res) => {
     return getUserController.handle(req, res);
 });
+
+router.get('/teams/:team_id', auth, (req, res) => {
+    return getTeamController.handle(req, res);
+})
 
 export default router;

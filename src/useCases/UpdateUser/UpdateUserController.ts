@@ -9,41 +9,40 @@ export class UpdateUserController {
         const paramsId: string = req.params.user_id;
         const { username, email, first_name, last_name, password } = req.body
 
-        if(!req.user){
-            throw new HttpError(401, 'User not authenticated');
-        }
-
-        const { is_admin } = req.user || { is_admin: false }
-
-        if(is_admin){
-            try{
-                const result = await this.updateUserUseCase.executeAdmin(paramsId);
-
-                if (result){
-                    return res.status(200).json({ success: 'User updated successfully', user: result });
-                }
-
-            } catch(error: any){
-
-                if (error instanceof HttpError){
-                    return res.status(error.status).json({ error: error.message });
-                }
-                
-                return res.status(500).json({ error: 'Internal serve error' })
+        try{            
+            if(!req.user){
+                throw new HttpError(401, 'User not authenticated');
             }
-        }
 
-        const id = req.user.id
+            const { is_admin } = req.user || { is_admin: false }
 
-        if(!id){
-            throw new HttpError(401, 'Unauthorized: Only logged users can make changes');
-        }
+            if(is_admin){
+                try{
+                    const result = await this.updateUserUseCase.executeAdmin(paramsId);
 
-        if (id !== paramsId){
-            throw new HttpError(401, 'Unauthorized: Users can only change their own account');
-        }
+                    if (result){
+                        return res.status(200).json({ success: 'User updated successfully', user: result });
+                    }
 
-        try{
+                } catch(error: any){
+
+                    if (error instanceof HttpError){
+                        return res.status(error.status).json({ error: error.message });
+                    }
+                    
+                    return res.status(500).json({ error: 'Internal serve error' })
+                }
+            }
+
+            const id = req.user.id
+
+            if(!id){
+                throw new HttpError(401, 'Unauthorized: Only logged users can make changes');
+            }
+
+            if (id !== paramsId){
+                throw new HttpError(401, 'Unauthorized: Users can only change their own account');
+            }
             const user = {
                 id: id,
                 username: username,

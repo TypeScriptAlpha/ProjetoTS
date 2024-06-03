@@ -10,15 +10,15 @@ export class UpdateTeamController{
         const paramsId: string = req.params.team_id;
         const { name, leader } = req.body;
         const { is_admin } = req.user || { is_admin: false };
-
-        if(!req.user){
-            throw new HttpError(401, 'User not authenticated');
-        }
         
-        const teamId = req.user.leader
-        const userId = req.user.id
-
         try {
+            if(!req.user){
+                throw new HttpError(401, 'User not authenticated');
+            }
+
+            const teamId = req.user.leader
+            const userId = req.user.id
+
             if (!is_admin && teamId !== paramsId) {
                 throw new HttpError(401, 'Unauthorized: Only leaders can change squad info');
             }

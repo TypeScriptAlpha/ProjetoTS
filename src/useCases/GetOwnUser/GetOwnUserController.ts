@@ -7,15 +7,18 @@ export class GetOwnUserController {
     constructor(private getOwnUserUseCase: GetOwnUserUseCase) {}
 
     public async handle(req: Request, res: Response): Promise<Response> {
-        if (!req.user) {
-            return res.status(401).json({ error: "User not authenticated" });
-        }
-        
-        const userId = req.user.id;
-        if(!userId){
-            throw new HttpError(401, 'User not authenticated');
-        }
+
         try {
+            
+            if (!req.user) {
+                return res.status(401).json({ error: "User not authenticated" });
+            }
+            
+            const userId = req.user.id;
+            if(!userId){
+                throw new HttpError(401, 'User not authenticated');
+            }
+
             const user = await this.getOwnUserUseCase.execute(userId);
             return res.status(200).json(user);
         } catch (error: any) {

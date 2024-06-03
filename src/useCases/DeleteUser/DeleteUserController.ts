@@ -10,11 +10,14 @@ export class DeleteUserController {
 
         const { is_admin } = req.user || { is_admin: false };
 
-        if(!is_admin){
-            throw new HttpError(403, 'Unauthorized: Only admin can perform this action');
-        }
+
 
         try{
+            
+            if(!is_admin){
+                throw new HttpError(403, 'Unauthorized: Only admin can perform this action');
+            }
+
             const result = await this.deleteUserUserCase.execute({ id });
 
             const user = {

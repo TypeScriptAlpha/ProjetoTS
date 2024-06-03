@@ -10,6 +10,8 @@ import { deleteUserFromTeamController } from "../useCases/DeleteUserFromTeam";
 import { deleteTeamController } from "../useCases/DeleteTeam";
 import { updateUserController } from "../useCases/UpdateUser";
 import { updateTeamController } from "../useCases/UpdateTeam";
+import { createTeamController } from "../useCases/CreateTeam";
+import { setMemberController } from "../useCases/setMember"
 
 const router: Router = Router();
 
@@ -19,6 +21,14 @@ router.post('/users', (req, res) => {
 
 router.post('/login', (req, res) => {
     return loginUserController.handle(req, res);
+})
+
+router.post('/teams', (req, res) => {
+    return createTeamController.handle(req, res)
+})
+
+router.post('/teams/:team_id/member/:user_id', (req, res) => {
+    return setMemberController.handle(req, res)
 })
 
 router.get('/users', auth, (req, res) => {

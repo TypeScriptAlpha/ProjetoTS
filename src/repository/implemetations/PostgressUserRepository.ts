@@ -432,4 +432,30 @@ export class PostgresUserRepository implements UserRepository {
             }
         }
     }
+
+    public async updateUserToAdmin(id: string): Promise<User | null> {
+        let client: any = null;
+        const query: string = 'UPDATE users SET is_admin = true WHERE id = $1 RETURNING id, username, email, first_name, last_name, is_admin';
+
+        try{
+            client = await pool.connect();
+            await client.query('BEGIN');
+            const result = await client.query(query, [id]);
+            await client.query('COMMIT');
+
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } 
+
+            return null;
+        } catch(error: any) {
+            console.error('Error requesting data: ', error);
+            throw new HttpError(500, 'Error requesting data');
+        } finally {
+            if(client){
+                client.release()
+            }
+        }
+    }
+    
 }

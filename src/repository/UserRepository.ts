@@ -20,4 +20,5 @@ export interface UserRepository{
     getUser(id: string): Promise<User | null>;
     getSquadById(id: string): Promise<Team | null>;
     findMembersByTeamId(team_id: string): Promise<User[]>;
+    updateUserToAdmin(id:string): Promise<User | null>;
 }

@@ -13,6 +13,26 @@ export class UpdateUserController {
             throw new HttpError(401, 'User not authenticated');
         }
 
+        const { is_admin } = req.user || { is_admin: false }
+
+        if(is_admin){
+            try{
+                const result = await this.updateUserUseCase.executeAdmin(paramsId);
+
+                if (result){
+                    return res.status(200).json({ success: 'User updated successfully', user: result });
+                }
+
+            } catch(error: any){
+
+                if (error instanceof HttpError){
+                    return res.status(error.status).json({ error: error.message });
+                }
+                
+                return res.status(500).json({ error: 'Internal serve error' })
+            }
+        }
+
         const id = req.user.id
 
         if(!id){

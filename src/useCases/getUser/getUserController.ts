@@ -9,7 +9,7 @@ export class GetUserController {
         const { user_id } = req.params;
         const requester_id = req.user?.id || '';
         const is_admin = req.user?.is_admin || false;
-        const requester_leader_id = req.user?.leader;  // Se existir, indica que é líder de uma equipe
+        const requester_leader_id = req.user?.leader || '' ;  // Se existir, indica que é líder de uma equipe
 
         try {
             const user = await this.getUserUseCase.execute(user_id, requester_id, is_admin, requester_leader_id);

@@ -15,6 +15,8 @@ export interface UserRepository{
     deleteTeamByTeamId(team_id: string): Promise<void>
     updateUserById(user: User): Promise<User | null>
     updateTeamById(team: Team): Promise<Team | null>
+    postTeam(team: Team): Promise<Team>
+    postTeamsMember(userId: string, teamId: string): Promise<boolean>
     getUser(id: string): Promise<User | null>;
     getSquadById(id: string): Promise<Team | null>;
     findMembersByTeamId(team_id: string): Promise<User[]>;

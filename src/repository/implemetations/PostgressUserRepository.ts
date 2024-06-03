@@ -292,6 +292,75 @@ export class PostgresUserRepository implements UserRepository {
         }
     }
 
+    public async postTeam(team: Team): Promise<Team>{
+        let client:any = null;
+        
+        const checkLeaderQuery: string = 'SELECT id FROM squads WHERE leader = $1';
+        const insertTeamQuery: string = 'INSERT INTO squads (name, leader) VALUES ($1, $2) RETURNING id, name, leader';
+        const updateUserSquadQuery: string = 'UPDATE users SET squad = $1 WHERE id = $2';
+
+        try {
+            client = await pool.connect();
+            await client.query('BEGIN');
+
+            const checkLeaderResult = await client.query(checkLeaderQuery, [team.leader]);
+
+            if (checkLeaderResult.rowCount > 0) {
+            await client.query('ROLLBACK');
+            throw new HttpError(400, 'The leader is already leading another squad');
+            }
+
+            const insertResult = await client.query(insertTeamQuery, [team.name, team.leader]);
+
+            if (insertResult.rowCount > 0 && insertResult.rows[0]) {
+                const squadId = insertResult.rows[0].id;
+
+                await client.query(updateUserSquadQuery, [squadId, team.leader]);
+
+                await client.query('COMMIT');
+                console.log('Data entered successfully');
+
+                return insertResult.rows[0];
+            }
+
+            await client.query('ROLLBACK');
+            throw new HttpError(500, 'Error when inserting new team');
+        } catch (error: any) {
+            console.error('Error inserting data', error);
+            if (client) {
+            await client.query('ROLLBACK');
+            }
+            throw new HttpError(500, 'Error inserting data');
+        } finally {
+            if (client) {
+            client.release();
+            }
+        }
+    }
+
+    public async postTeamsMember(userId: string, teamId: string): Promise<boolean> {
+        let client: any = null;
+
+        try {
+            client = await pool.connect();
+            await client.query('BEGIN');
+
+            const checkQuery: string = 'SELECT squad FROM users WHERE id = $1';
+            const checkResult = await client.query(checkQuery, [userId]);
+            if (checkResult.rows[0].squad) {
+                throw new Error('The user already belongs to a squad');
+            }
+
+            const updateQuery: string = 'UPDATE users SET squad = $1 WHERE id = $2';
+            await client.query(updateQuery, [teamId, userId]);
+
+            await client.query('COMMIT');
+            return true;
+        } catch (error) {
+            await client.query('ROLLBACK');
+            console.error('Error updating user:', error);
+            return false;
+
     public async getUser(id: string): Promise<User | null> {
         let client: any = null;
 

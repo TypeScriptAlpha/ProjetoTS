@@ -23,11 +23,11 @@ router.post('/login', (req, res) => {
     return loginUserController.handle(req, res);
 })
 
-router.post('/teams', (req, res) => {
+router.post('/teams',auth, (req, res) => {
     return createTeamController.handle(req, res)
 })
 
-router.post('/teams/:team_id/member/:user_id', (req, res) => {
+router.post('/teams/:team_id/member/:user_id',auth, (req, res) => {
     return setMemberController.handle(req, res)
 })
 

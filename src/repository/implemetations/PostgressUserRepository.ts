@@ -291,6 +291,7 @@ export class PostgresUserRepository implements UserRepository {
             }
         }
     }
+
     public async postTeam(team: Team): Promise<Team>{
         let client:any = null;
         
@@ -314,7 +315,6 @@ export class PostgresUserRepository implements UserRepository {
             if (insertResult.rowCount > 0 && insertResult.rows[0]) {
                 const squadId = insertResult.rows[0].id;
 
-                // Atualizar a coluna squad no usuário líder
                 await client.query(updateUserSquadQuery, [squadId, team.leader]);
 
                 await client.query('COMMIT');
@@ -324,7 +324,7 @@ export class PostgresUserRepository implements UserRepository {
             }
 
             await client.query('ROLLBACK');
-            throw new HttpError(500, 'Error ao inserir a nova equipe');
+            throw new HttpError(500, 'Error when inserting new team');
         } catch (error: any) {
             console.error('Error inserting data', error);
             if (client) {
@@ -345,14 +345,12 @@ export class PostgresUserRepository implements UserRepository {
             client = await pool.connect();
             await client.query('BEGIN');
 
-            // Verificar se o usuário já pertence a um squad
             const checkQuery: string = 'SELECT squad FROM users WHERE id = $1';
             const checkResult = await client.query(checkQuery, [userId]);
             if (checkResult.rows[0].squad) {
-                throw new Error('O usuário já pertence a um squad');
+                throw new Error('The user already belongs to a squad');
             }
 
-            // Atualizar o usuário para adicionar ao squad
             const updateQuery: string = 'UPDATE users SET squad = $1 WHERE id = $2';
             await client.query(updateQuery, [teamId, userId]);
 

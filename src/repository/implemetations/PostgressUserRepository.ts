@@ -360,6 +360,72 @@ export class PostgresUserRepository implements UserRepository {
             await client.query('ROLLBACK');
             console.error('Error updating user:', error);
             return false;
+
+    public async getUser(id: string): Promise<User | null> {
+        let client: any = null;
+
+        const query: string = 'SELECT id, username, email, first_name, last_name, squad, is_admin FROM users WHERE id = $1';
+    
+        try {
+            client = await pool.connect();
+            await client.query('BEGIN');
+    
+            const result = await client.query(query, [id]);
+            const user = result.rows[0];
+    
+            await client.query('COMMIT');
+            return user || null;
+        } catch (error: any) {
+            await client.query('ROLLBACK');
+            console.error('Error fetching user:', error);
+            throw new HttpError(500, 'Error fetching user');
+        } finally {
+            if (client) {
+                client.release();
+            }
+        }
+    }
+
+    public async getSquadById(id: string ): Promise<Team | null> {
+        let client: any = null;
+
+        const query: string = 'SELECT name, leader FROM squads WHERE id = $1';
+
+        try{
+            client = await pool.connect();
+            const result = await client.query(query, [id]);
+
+            if(result.rows.length > 0){
+                return result.rows[0]
+            } 
+
+            return null;
+
+        } catch(error: any){
+            console.log('Error requesting data: ', error);
+            throw new HttpError(401, 'Error requesting data');
+        } finally {
+            if(client){
+                client.release();
+            }
+        }
+    }
+
+    public async findMembersByTeamId(team_id: string): Promise<User[]> {
+        let client: any = null;
+        const query: string = 'SELECT * FROM users WHERE squad = $1';
+    
+        try {
+            client = await pool.connect();
+            const result = await client.query(query, [team_id]);
+            if (result.rows.length > 0) {
+                return result.rows.map((row: User) => new User(row));
+            } else {
+                return [];
+            }
+        } catch (error: any) {
+            console.error('Error requesting data: ', error);
+            throw new HttpError(500, 'Error requesting data');
         } finally {
             if (client) {
                 client.release();

@@ -3,6 +3,7 @@ import { auth } from "../middleware/authenticate";
 import { createUserController } from "../useCases/CreateUser";
 import { loginUserController } from "../useCases/LoginUser";
 import { listAllUsersController } from "../useCases/ListAllUsers";
+import { listAllTeamsController } from "../useCases/ListAllTeams";
 import { getOwnUserController } from "../useCases/GetOwnUser";
 import { logoutUserController } from "../useCases/LogoutUser";
 import { deleteUserController } from "../useCases/DeleteUser";
@@ -35,6 +36,10 @@ router.delete('/logout', (req, res) => {
 
 router.delete('/users/:user_id', auth, (req, res) => {
     return deleteUserController.handle(req, res);
+})
+
+router.get('/teams', auth, (req, res) => {
+    return listAllTeamsController.handle(req, res);
 })
 
 router.delete('/teams/:team_id', auth, (req, res) => {

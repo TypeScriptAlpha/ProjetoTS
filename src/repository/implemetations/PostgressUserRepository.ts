@@ -51,6 +51,24 @@ export class PostgresUserRepository implements UserRepository {
         }
     }
 
+    public async getAllTeams(): Promise<Team[]> {
+        let client:any = null;
+        const query: string = 'SELECT id, name, leader FROM squads';
+        
+        try {
+            client = await pool.connect();
+            const result = await client.query(query);
+            return result.rows;
+        } catch (error: any){
+            console.log('Erro requesting data: ', error);
+            throw new HttpError(500, 'Error requesting data');
+        } finally {
+            if(client){
+                client.release()
+            }
+        }
+    }
+
     public async getUserByEmail(email: string): Promise<User | null> {
         let client:any = null;
         const query: string = 'SELECT * FROM users WHERE email = $1';

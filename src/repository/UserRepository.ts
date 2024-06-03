@@ -4,6 +4,7 @@ import { Team } from "../entities/User";
 export interface UserRepository{
 
     getAllUsers(): Promise<User[]>
+    getAllTeams(): Promise<Team[]>
     getUserByUsername(username: string): Promise<User | null>
     getUserById(id: string): Promise<User | null>
     getUserByEmail(email: string): Promise<User | null>

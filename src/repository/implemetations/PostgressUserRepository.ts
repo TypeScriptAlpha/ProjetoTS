@@ -384,6 +384,7 @@ export class PostgresUserRepository implements UserRepository {
             }
         }}
 
+
     public async getUser(id: string): Promise<User | null> {
         let client: any = null;
 

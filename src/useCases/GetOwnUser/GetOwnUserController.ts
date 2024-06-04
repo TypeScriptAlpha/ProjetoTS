@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { GetOwnUserUseCase } from "./GetOwnUserUseCase";
 import { HttpError } from "../../errors/HttpError";
-//DTO?
 
 export class GetOwnUserController {
     constructor(private getOwnUserUseCase: GetOwnUserUseCase) {}
@@ -22,9 +21,15 @@ export class GetOwnUserController {
             const user = await this.getOwnUserUseCase.execute(userId);
             return res.status(200).json(user);
         } catch (error: any) {
-            return res.status(500).json({ error: error.message });
+            if (error instanceof HttpError) {
+                return res.status(error.status).json({ error: error.message });
+            } else if (error.message === 'User not found') {
+                return res.status(404).json({ error: "User not found" });
+            } else if (error.message === 'Invalid user ID') {
+                return res.status(400).json({ error: "Invalid user ID" });
+            } else {
+                return res.status(500).json({ error: "Internal server error" });
+            }
         }
     }
 }
-// curl -X GET http://localhost:3000/users/me \
-// -b "session_id=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImEwOTZhY2NmLTQ4YjUtNDdmMi1hYWY2LTg0MGE2MDkxMDY5ZCIsImlzX2FkbWluIjpmYWxzZSwibGVhZGVyIjoiOGYzNmVjYTctODE5NS00ZjFjLTgzZjItZDdiMzcyMmI2NGM2IiwiaWF0IjoxNzE3MzU3NjE3LCJleHAiOjE3MTgyMjE2MTd9.MaMsfiG0w_8-9llfCELFlUdEq78fIJ5FRDba2RkHCOg"

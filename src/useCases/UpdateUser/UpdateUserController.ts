@@ -2,10 +2,22 @@ import { Request, Response } from "express";
 import { UpdateUserUseCase } from "./UpdateUserUseCase";
 import { HttpError } from "../../errors/HttpError";
 
+interface UserPayload {
+    id: string;
+    is_admin: boolean;
+    leader: string;
+    squad?: string; 
+}
+
+
+interface CustomRequest extends Request {
+    user?: UserPayload; 
+}
+
 export class UpdateUserController {
     constructor(private updateUserUseCase: UpdateUserUseCase){}
 
-    public async handle(req: Request, res: Response){
+    public async handle(req: CustomRequest, res: Response){
         const paramsId: string = req.params.user_id;
         const { username, email, first_name, last_name, password } = req.body
 

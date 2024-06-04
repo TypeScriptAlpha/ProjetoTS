@@ -42,7 +42,7 @@ export class PostgresUserRepository implements UserRepository {
             const result = await client.query(query);
             return result.rows;
         } catch (error: any){
-            console.log('Erro requesting data: ', error);
+            console.error('Erro requesting data: ', error);
             throw new HttpError(500, 'Error requesting data');
         } finally {
             if(client){
@@ -60,7 +60,7 @@ export class PostgresUserRepository implements UserRepository {
             const result = await client.query(query);
             return result.rows;
         } catch (error: any){
-            console.log('Erro requesting data: ', error);
+            console.error('Erro requesting data: ', error);
             throw new HttpError(500, 'Error requesting data');
         } finally {
             if(client){
@@ -83,7 +83,7 @@ export class PostgresUserRepository implements UserRepository {
                 return null;
             }
         } catch (error){
-            console.log('Erro requesting data: ', error);
+            console.error('Erro requesting data: ', error);
             throw new HttpError(401, 'Error requesting data');
         } finally {
             if(client){
@@ -106,7 +106,7 @@ export class PostgresUserRepository implements UserRepository {
                 return null;
             }
         } catch (error: any){
-            console.log('Erro requesting data: ', error);
+            console.error('Erro requesting data: ', error);
             throw new HttpError(401, 'Error requesting data');
         } finally {
             if(client){
@@ -151,7 +151,7 @@ export class PostgresUserRepository implements UserRepository {
 
             return null;      
         } catch(error: any){
-            console.log('Erro requesting data: ', error);
+            console.error('Erro requesting data: ', error);
             throw new HttpError(401, 'Error requesting data');
         } finally {
             if(client){
@@ -179,7 +179,7 @@ export class PostgresUserRepository implements UserRepository {
             return null;
 
         } catch(error){
-            console.log('Error removing user from squad: ', error);
+            console.error('Error removing user from squad: ', error);
             throw new HttpError(417, 'Error removing user from squad');
         } finally{
             if(client){
@@ -204,7 +204,7 @@ export class PostgresUserRepository implements UserRepository {
             return null;
 
         } catch(error: any){
-            console.log('Error requesting data: ', error);
+            console.error('Error requesting data: ', error);
             throw new HttpError(401, 'Error requesting data');
         } finally {
             if(client){
@@ -250,7 +250,7 @@ export class PostgresUserRepository implements UserRepository {
             } 
             return null;
         } catch(error:any){
-            console.log('Erro requesting data: ', error);
+            console.error('Erro requesting data: ', error);
             throw new HttpError(401, 'Error requesting data');
         } finally {
             if(client){
@@ -275,7 +275,7 @@ export class PostgresUserRepository implements UserRepository {
             } 
             return null;
         } catch(error: any){
-            console.log('Error updating data: ', error);
+            console.error('Error updating data: ', error);
             throw new HttpError(417, "Error updating data");
         } finally {
             if(client){
@@ -378,8 +378,12 @@ export class PostgresUserRepository implements UserRepository {
             await client.query('ROLLBACK');
             console.error('Error updating user:', error);
             return false;
-        }
-    }
+        } finally {
+            if(client){
+                client.release();
+            }
+        }}
+
 
     public async getUser(id: string): Promise<User | null> {
         let client: any = null;
@@ -422,7 +426,7 @@ export class PostgresUserRepository implements UserRepository {
             return null;
 
         } catch(error: any){
-            console.log('Error requesting data: ', error);
+            console.error('Error requesting data: ', error);
             throw new HttpError(401, 'Error requesting data');
         } finally {
             if(client){

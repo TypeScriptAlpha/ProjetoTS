@@ -12,7 +12,6 @@ export class SetMemberUseCase {
         }
 
         const success = await this.userRepository.postTeamsMember(user_id, team_id);
-        console.log("secess:", success);
         
         if (!success) {
             throw new HttpError(500, "Error adding user to squad");

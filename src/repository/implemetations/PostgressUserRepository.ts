@@ -378,6 +378,8 @@ export class PostgresUserRepository implements UserRepository {
             await client.query('ROLLBACK');
             console.error('Error updating user:', error);
             return false;
+        }
+    }
 
     public async getUser(id: string): Promise<User | null> {
         let client: any = null;

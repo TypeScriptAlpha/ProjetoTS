@@ -67,7 +67,7 @@ export class UpdateUserUseCase {
 
     public async executeAdmin(id: string){
         const userData = await this.userRepositories.getUserById(id);
-        console.log(userData)
+
         if(userData?.squad){
             throw new HttpError(400, 'User cannot be an administrator if they are in a squad')
         }

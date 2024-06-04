@@ -8,9 +8,10 @@ export class ListAllTeamsController {
     public async handle(req: Request, res:Response){
         try{
             const is_admin = req.user?.is_admin ?? false;
+            const is_leader = req.user?.leader ?? false;
 
-            if(!is_admin){
-                throw new HttpError(403, 'Unauthorized: Only admin can perform this action');
+            if(!is_admin && !is_leader){
+                throw new HttpError(403, 'Unauthorized: Only admin and team leaders can perform this action');
             }
 
             const result = await this.listAllTeamUseCase.execute();

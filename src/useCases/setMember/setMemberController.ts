@@ -3,10 +3,22 @@ import { SetMemberUseCase } from "./setMemberUseCase";
 import { HttpError } from "../../errors/HttpError";
 import { UserData } from "./setMemberDTO";
 
+interface UserPayload {
+    id: string;
+    is_admin: boolean;
+    leader: string;
+    squad?: string; 
+}
+
+
+interface CustomRequest extends Request {
+    user?: UserPayload; 
+}
+
 export class SetMemberController {
     constructor(private setMemberUseCase: SetMemberUseCase) {}
 
-    public async handle(req: Request, res: Response): Promise<Response> {
+    public async handle(req: CustomRequest, res: Response): Promise<Response> {
         const { team_id, user_id } = req.params;
         
         try {

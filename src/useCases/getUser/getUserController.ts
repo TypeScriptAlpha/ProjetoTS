@@ -2,10 +2,21 @@ import { Request, Response } from "express";
 import { HttpError } from "../../errors/HttpError";
 import { GetUserUseCase } from "./getUserUseCase";
 
+interface UserPayload {
+    id: string;
+    is_admin: boolean;
+    leader: string;
+    squad?: string; 
+}
+
+
+interface CustomRequest extends Request {
+    user?: UserPayload; 
+}
 export class GetUserController {
     constructor(private getUserUseCase: GetUserUseCase) {}
 
-    public async handle(req: Request, res: Response): Promise<Response> {
+    public async handle(req: CustomRequest, res: Response): Promise<Response> {
         const { user_id } = req.params;
         const requester_id = req.user?.id || '';
         const is_admin = req.user?.is_admin || false;

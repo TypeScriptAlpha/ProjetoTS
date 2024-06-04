@@ -2,10 +2,22 @@ import { Request, Response } from "express";
 import { ListAllTeamsUseCase } from "./ListAllTeamsUseCase";
 import { HttpError } from "../../errors/HttpError";
 
+interface UserPayload {
+    id: string;
+    is_admin: boolean;
+    leader: string;
+    squad?: string; 
+}
+
+
+interface CustomRequest extends Request {
+    user?: UserPayload; 
+}
+
 export class ListAllTeamsController {
     public constructor(private listAllTeamUseCase: ListAllTeamsUseCase){}
 
-    public async handle(req: Request, res:Response){
+    public async handle(req: CustomRequest, res:Response){
         try{
             const is_admin = req.user?.is_admin ?? false;
             const is_leader = req.user?.leader ?? false;

@@ -1,8 +1,19 @@
-import { NextFunction, Request, Response } from "express";
-import config from "../config/config";
-import jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import config from '../config/config';
 
-export const auth = async (req: Request, res: Response, next: NextFunction) => {
+interface UserPayload {
+    id: string;
+    is_admin: boolean;
+    leader: string;
+    squad?: string; 
+}
+
+interface CustomRequest extends Request {
+    user?: UserPayload; 
+}
+
+export const auth = async (req: CustomRequest, res: Response, next: NextFunction) => {
     try {
         const sessionToken = req.cookies.session_id;
 
@@ -14,7 +25,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
             if (error) {
                 return res.status(403).json({ error: "Invalid Token JWT" });
             } else {
-                req.user = decoded; 
+                req.user = decoded as UserPayload;
 
                 next();
             }

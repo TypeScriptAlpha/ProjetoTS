@@ -2,10 +2,21 @@ import { Request, Response } from "express";
 import { DeleteUserFromTeamUseCase } from "./DeleteUserFromTeamUseCase";
 import { HttpError } from "../../errors/HttpError";
 
+interface UserPayload {
+    id: string;
+    is_admin: boolean;
+    leader: string;
+    squad?: string; 
+}
+
+
+interface CustomRequest extends Request {
+    user?: UserPayload; 
+}
 export class DeleteUserFromTeamController {
     constructor(private deleteUserFromTeamUseCase: DeleteUserFromTeamUseCase){}
 
-    public async handle(req: Request, res: Response){
+    public async handle(req: CustomRequest, res: Response){
         const user_id: string = req.params.user_id;
         const team_id: string = req.params.team_id;
         

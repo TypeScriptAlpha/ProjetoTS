@@ -3,10 +3,22 @@ import { UpdateTeamUseCase } from "./UpdateTeamUseCase";
 import { HttpError } from "../../errors/HttpError";
 import { UpdateTeamDTO } from "./UpdateTeamDTO";
 
+interface UserPayload {
+    id: string;
+    is_admin: boolean;
+    leader: string;
+    squad?: string; 
+}
+
+
+interface CustomRequest extends Request {
+    user?: UserPayload; 
+}
+
 export class UpdateTeamController{
     constructor(private updateTeamUseCase: UpdateTeamUseCase){};
 
-    public async handle(req: Request, res: Response){
+    public async handle(req: CustomRequest, res: Response){
         const paramsId: string = req.params.team_id;
         const { name, leader } = req.body;
         const { is_admin } = req.user || { is_admin: false };

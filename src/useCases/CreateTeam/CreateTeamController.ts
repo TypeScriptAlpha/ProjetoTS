@@ -2,10 +2,22 @@ import { Request, Response } from "express";
 import { CreateTeamUseCase } from "./CreateTeamUseCase";
 import { HttpError } from "../../errors/HttpError";
 import { TeamData } from "./CreateTeamDTO";
+
+interface UserPayload {
+    id: string;
+    is_admin: boolean;
+    leader: string;
+    squad?: string; 
+}
+
+
+interface CustomRequest extends Request {
+    user?: UserPayload; 
+}
 export class CreateTeamController {
     constructor(private createTeamUseCase: CreateTeamUseCase){}
 
-    public async handle(req: Request, res: Response): Promise<Response>{
+    public async handle(req: CustomRequest, res: Response): Promise<Response>{
         const { name, leader } = req.body
         
         try{
